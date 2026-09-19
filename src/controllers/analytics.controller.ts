@@ -32,8 +32,11 @@ export class AnalyticsController extends BaseController{
 
       const minAge = req.query.minAge ? parseInt(req.query.minAge as string, 10) : undefined;
       const maxAge = req.query.maxAge ? parseInt(req.query.maxAge as string, 10) : undefined;
+
+      const page = req.query.page ? parseInt(req.query.page as string, 10) : undefined;
+      const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : undefined;
       
-      const users = await this.analyticsService.getUsers(city, name ,search, age, minAge, maxAge, sortBy, order);
+      const users = await this.analyticsService.getUsers(city, name ,search, age, minAge, maxAge, sortBy, order, page, limit);
       
       this.success(res, { message: "Users fetched successfully", users }, STATUS_CODE.OK);
     } catch (error) {
