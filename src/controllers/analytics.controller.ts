@@ -26,14 +26,14 @@ export class AnalyticsController extends BaseController{
       const { error } = userQuerySchema.validate(req.query);
       if (error) throw new Error(error.message);
       
-      const { city, name, search } = req.query as { city?: string; name?: string; search?: string };
+      const { city, name, search , sortBy , order} = req.query as { city?: string; name?: string; search?: string; sortBy?: string; order?: "asc" | "desc" | undefined };
 
       const age = req.query.age ? parseInt(req.query.age as string, 10) : undefined;
 
       const minAge = req.query.minAge ? parseInt(req.query.minAge as string, 10) : undefined;
       const maxAge = req.query.maxAge ? parseInt(req.query.maxAge as string, 10) : undefined;
       
-      const users = await this.analyticsService.getUsers(city, name ,search, age, minAge, maxAge);
+      const users = await this.analyticsService.getUsers(city, name ,search, age, minAge, maxAge, sortBy, order);
       
       this.success(res, { message: "Users fetched successfully", users }, STATUS_CODE.OK);
     } catch (error) {

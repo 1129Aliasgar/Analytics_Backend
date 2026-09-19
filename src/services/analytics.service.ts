@@ -11,7 +11,7 @@ export class AnalyticsService {
   @inject(TYPES.Logger)
   logger!: Logger;
 
-  async getUsers(city?: string, name?: string, search?: string , age?: number , minAge?: number, maxAge?: number) {
+  async getUsers(city?: string, name?: string, search?: string , age?: number , minAge?: number, maxAge?: number , sortBy?: string, order?: "asc" | "desc") {
     const users = await this.analyticsRepository.getUsers();
     
     if (users.length === 0) {
@@ -35,6 +35,24 @@ export class AnalyticsService {
 
     if (result.length === 0) {
       throw new Error(`No users found`);
+    }
+
+    if (sortBy) {
+      result.sort((a, b) => {
+        if (sortBy === 'age') {
+          return order === "desc"
+            ? b.age - a.age
+            : a.age - b.age;
+        }
+
+        if (sortBy === 'name') {
+          return order === "desc"
+            ? b.name.localeCompare(a.name)
+            : a.name.localeCompare(b.name);
+        }
+
+        return 0;
+      });
     }
     
     return result;

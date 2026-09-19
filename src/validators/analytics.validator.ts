@@ -1,4 +1,3 @@
-import { Agent } from "https";
 import Joi from "joi";
 
 export const userQuerySchema = Joi.object({
@@ -8,4 +7,6 @@ export const userQuerySchema = Joi.object({
   age: Joi.number().optional(),
   minAge: Joi.number().optional(),
   maxAge: Joi.number().optional(),
+  sortBy: Joi.string().optional(),
+  order: Joi.string().optional(),
 });
