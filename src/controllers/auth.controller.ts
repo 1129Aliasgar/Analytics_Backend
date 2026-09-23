@@ -85,7 +85,10 @@ export class AuthController extends BaseController {
   async profile(req: Request, res: Response) {
     try {
       const { token } = req.cookies;
-      const user = await this.authService.profile(req.user!.userId, token);
+      const user = await this.authService.profile({
+        userId: req.user!.userId,
+        token,
+      });
       return this.success(res, user, STATUS_CODE.OK);
     } catch (error) {
       return this.error(

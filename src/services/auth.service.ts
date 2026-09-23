@@ -10,6 +10,7 @@ import {
   RegisterUserInput,
   LoginUserInput,
   LogoutUserInput,
+  ProfileUserInput,
 } from "../types/auth.types.js";
 import Logger from "../utils/logger.js";
 import AuthRepository from "../repositories/auth.repository.js";
@@ -71,16 +72,18 @@ export class AuthService {
     return { user, token };
   }
 
-  async profile(userId: string, token: string) {
-    this.logger.info("requesting profile", { userId });
+  async profile(userData: ProfileUserInput) {
+    this.logger.info("requesting profile", { userId: userData.userId });
 
-    const isValid = await this.authRepository.isTokenBlacklisted(token);
+    const isValid = await this.authRepository.isTokenBlacklisted(
+      userData.token,
+    );
 
     if (!isValid) {
       throw new Error("token is not valid");
     }
 
-    const user = await this.authRepository.findUserById(userId);
+    const user = await this.authRepository.findUserById(userData.userId);
 
     if (!user) {
       throw new Error("User not found");
@@ -90,7 +93,7 @@ export class AuthService {
   }
 
   async logout(token: LogoutUserInput) {
-    this.logger.info("logout try for", { token });
+    this.logger.info("logout try for", { token: token.token });
 
     const result = await this.authRepository.createToken(token.token);
 

@@ -12,3 +12,8 @@ export interface LoginUserInput {
 export interface LogoutUserInput {
   token: string;
 }
+
+export interface ProfileUserInput {
+  userId: string;
+  token: string;
+}
