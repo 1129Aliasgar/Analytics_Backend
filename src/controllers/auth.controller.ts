@@ -13,7 +13,7 @@ import AuthService from "../services/auth.service.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 import Logger from "../utils/logger.js";
 
-@controller("/auth")
+@controller("/api/v1/user")
 export class AuthController extends BaseController {
   @inject(TYPES.AuthService)
   authService!: AuthService;

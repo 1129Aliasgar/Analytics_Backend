@@ -9,7 +9,7 @@ import Logger from "../utils/logger.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 import { userQuerySchema } from "../validators/analytics.validator.js";
 
-@controller("/analytics")
+@controller("/api/v1/analytics")
 export class AnalyticsController extends BaseController {
   @inject(TYPES.AnalyticsService)
   analyticsService!: AnalyticsService;

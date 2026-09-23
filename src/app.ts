@@ -40,7 +40,7 @@ server.setConfig((app) => {
 
 const app = server.build();
 
-app.get("/health", (req, res) => {
+app.get("/api/v1/health", (req, res) => {
   res.send("OK");
 });
 

@@ -11,6 +11,7 @@ import Logger from "../utils/logger.js";
 import MongoDatabase from "./database.js";
 import AnalyticsRepository from "../repositories/analytics.repository.js";
 import AnalyticsService from "../services/analytics.service.js";
+import ApiError from "../utils/apiError.js";
 
 const container = new Container();
 
@@ -30,5 +31,9 @@ container
 
 // Logger bindings
 container.bind(TYPES.Logger).to(Logger).inSingletonScope();
+
+// ApiError bindings
+container.bind(TYPES.ApiError).to(ApiError).inSingletonScope();
+
 
 export default container;

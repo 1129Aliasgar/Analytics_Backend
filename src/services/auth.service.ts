@@ -14,6 +14,8 @@ import {
 } from "../types/auth.types.js";
 import Logger from "../utils/logger.js";
 import AuthRepository from "../repositories/auth.repository.js";
+import { STATUS_CODE } from "../constants/statusCode.js";
+import ApiError from "../utils/apiError.js";
 
 @injectable()
 export class AuthService {
@@ -23,13 +25,17 @@ export class AuthService {
   @inject(TYPES.Logger)
   logger!: Logger;
 
+  @inject(TYPES.ApiError)
+  apiError!: ApiError;
+
   async register(userData: RegisterUserInput) {
     this.logger.info("Registering user", { email: userData.email });
 
     const existingUser = await this.authRepository.findByEmail(userData.email);
 
     if (existingUser) {
-      throw new Error("User already exists");
+      this.logger.error("User already exists", { email: userData.email });
+      throw new ApiError("User already exists", STATUS_CODE.CONFLICT);
     }
 
     const hashedPassword = await bcrypt.hash(userData.password, 10);
@@ -53,7 +59,8 @@ export class AuthService {
     const user = await this.authRepository.findByEmail(userData.email);
 
     if (!user) {
-      throw new Error("User not found");
+       this.logger.error("User not found", { userId: userData.email });
+      throw new ApiError("User not found", STATUS_CODE.NOT_FOUND);
     }
 
     const isPasswordValid = await bcrypt.compare(
@@ -62,7 +69,8 @@ export class AuthService {
     );
 
     if (!isPasswordValid) {
-      throw new Error("Invalid password");
+      this.logger.error("Invalid password", { userId: userData.email });
+      throw new ApiError("Invalid password", STATUS_CODE.UNAUTHORIZED);
     }
 
     const token = generateToken({
@@ -80,13 +88,15 @@ export class AuthService {
     );
 
     if (!isValid) {
-      throw new Error("token is not valid");
+      this.logger.error("token is not valid", { userId: userData.userId });
+      throw new ApiError("token is not valid", STATUS_CODE.UNAUTHORIZED);
     }
 
     const user = await this.authRepository.findUserById(userData.userId);
 
     if (!user) {
-      throw new Error("User not found");
+      this.logger.error("User not found", { userId: userData.userId });
+      throw new ApiError("User not found", STATUS_CODE.NOT_FOUND);
     }
 
     return user;

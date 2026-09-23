@@ -19,4 +19,5 @@ export const TYPES = {
   Database: Symbol.for("Database"),
   Logger: Symbol.for("Logger"),
   AuthMiddleware: Symbol.for("AuthMiddleware"),
+  ApiError: Symbol.for("ApiError"),
 };

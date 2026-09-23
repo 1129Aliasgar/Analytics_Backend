@@ -2,6 +2,8 @@ import { injectable, inject } from "inversify";
 import { TYPES } from "../config/types.js";
 import AnalyticsRepository from "../repositories/analytics.repository.js";
 import Logger from "../utils/logger.js";
+import ApiError from "../utils/apiError.js";
+import { STATUS_CODE } from "../constants/statusCode.js";
 
 @injectable()
 export class AnalyticsService {
@@ -10,6 +12,9 @@ export class AnalyticsService {
 
   @inject(TYPES.Logger)
   logger!: Logger;
+
+  @inject(TYPES.ApiError)
+  apiError!: ApiError;
 
   async getUsers(
     city?: string,
@@ -45,7 +50,8 @@ export class AnalyticsService {
     });
 
     if (result.length === 0) {
-      throw new Error(`No users found`);
+      this.logger.error("No user found")
+      throw new ApiError(`No users found`, STATUS_CODE.NOT_FOUND);
     }
 
     // sorting
@@ -84,7 +90,8 @@ export class AnalyticsService {
   async getUserById(id: number) {
     const user = await this.analyticsRepository.getUserById(id);
     if (!user) {
-      throw new Error(`User with id ${id} not found`);
+      this.logger.error(`User with id ${id} not found`);
+      throw new ApiError(`User with id ${id} not found`, STATUS_CODE.NOT_FOUND);
     }
     return user;
   }
