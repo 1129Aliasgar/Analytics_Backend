@@ -9,7 +9,7 @@ export const userQuerySchema = Joi.object({
   minAge: Joi.number().optional().integer().min(1),
   maxAge: Joi.number().optional().integer().min(1),
   sortBy: Joi.string().optional().valid("age", "name"),
-  order: Joi.string().optional().valid("asc","desc"),
+  order: Joi.string().optional().valid("asc", "desc"),
   page: Joi.number().optional().integer().min(1),
   limit: Joi.number().optional().integer().min(1).max(100),
 });

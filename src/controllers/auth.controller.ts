@@ -84,7 +84,8 @@ export class AuthController extends BaseController {
   @httpGet("/profile", authMiddleware)
   async profile(req: Request, res: Response) {
     try {
-      const user = await this.authService.profile(req.user!.userId);
+      const { token } = req.cookies;
+      const user = await this.authService.profile(req.user!.userId, token);
       return this.success(res, user, STATUS_CODE.OK);
     } catch (error) {
       return this.error(
@@ -98,15 +99,22 @@ export class AuthController extends BaseController {
   @httpGet("/logout", authMiddleware)
   async logout(req: Request, res: Response) {
     this.logger.info("requesting logout", { userId: req.user?.userId });
-    
     try {
+      const { token } = req.cookies;
+
+      await this.authService.logout(token);
+
       res.clearCookie("token", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
       });
 
-      return this.success(res, { message: "Logged out successfully" }, STATUS_CODE.OK);
+      return this.success(
+        res,
+        { message: "Logged out successfully" },
+        STATUS_CODE.OK,
+      );
     } catch (error) {
       return this.error(
         res,
@@ -115,7 +123,6 @@ export class AuthController extends BaseController {
       );
     }
   }
-  
 }
 
 export default AuthController;

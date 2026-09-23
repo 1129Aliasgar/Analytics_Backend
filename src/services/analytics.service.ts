@@ -11,7 +11,18 @@ export class AnalyticsService {
   @inject(TYPES.Logger)
   logger!: Logger;
 
-  async getUsers(city?: string, name?: string, search?: string , age?: number , minAge?: number, maxAge?: number , sortBy?: string, order?: "asc" | "desc", page?: number , limit?: number) {
+  async getUsers(
+    city?: string,
+    name?: string,
+    search?: string,
+    age?: number,
+    minAge?: number,
+    maxAge?: number,
+    sortBy?: string,
+    order?: "asc" | "desc",
+    page?: number,
+    limit?: number,
+  ) {
     const users = await this.analyticsRepository.getUsers();
 
     if (users.length === 0) {
@@ -21,33 +32,30 @@ export class AnalyticsService {
     // filtering
     const result = users.filter((user) => {
       return (
-        city ? user.city.toLowerCase() === city.toLowerCase() : true)
-        &&
-        (name ? user.name.toLowerCase() === name.toLowerCase() : true)
-        &&
-        (search ? user.city.toLowerCase().includes(search.toLowerCase()) || user.name.toLowerCase().includes(search.toLowerCase()) : true)
-        &&
-        (age ? user.age === age : true)
-        &&
-        (minAge ? user.age >= minAge : true)
-        &&
-        (maxAge ? user.age <= maxAge : true);
+        (city ? user.city.toLowerCase() === city.toLowerCase() : true) &&
+        (name ? user.name.toLowerCase() === name.toLowerCase() : true) &&
+        (search
+          ? user.city.toLowerCase().includes(search.toLowerCase()) ||
+            user.name.toLowerCase().includes(search.toLowerCase())
+          : true) &&
+        (age ? user.age === age : true) &&
+        (minAge ? user.age >= minAge : true) &&
+        (maxAge ? user.age <= maxAge : true)
+      );
     });
 
     if (result.length === 0) {
       throw new Error(`No users found`);
     }
 
-    // sorting 
+    // sorting
     if (sortBy) {
       result.sort((a, b) => {
-        if (sortBy === 'age') {
-          return order === "desc"
-            ? b.age - a.age
-            : a.age - b.age;
+        if (sortBy === "age") {
+          return order === "desc" ? b.age - a.age : a.age - b.age;
         }
 
-        if (sortBy === 'name') {
+        if (sortBy === "name") {
           return order === "desc"
             ? b.name.localeCompare(a.name)
             : a.name.localeCompare(b.name);
@@ -66,8 +74,8 @@ export class AnalyticsService {
           page,
           limit,
           totalPages: Math.ceil(result.length / limit),
-        }
-      }
+        },
+      };
     }
 
     return result;
@@ -80,5 +88,6 @@ export class AnalyticsService {
     }
     return user;
   }
-
 }
+
+export default AnalyticsService;

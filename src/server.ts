@@ -1,6 +1,6 @@
 /**
  * @author aliasgarbootwala@gmail.com
-*/
+ */
 
 import app from "./app.js";
 import http from "node:http";

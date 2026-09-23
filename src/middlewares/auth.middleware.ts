@@ -19,7 +19,7 @@ export const authMiddleware = (
 ) => {
   try {
     const authHeader = req.headers.authorization;
-    
+
     const token = authHeader?.startsWith("Bearer ")
       ? authHeader.split(" ")[1]
       : req.cookies?.token;

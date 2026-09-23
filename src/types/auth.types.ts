@@ -1,4 +1,4 @@
-export interface RegisterUserInput{
+export interface RegisterUserInput {
   username: string;
   email: string;
   password: string;
@@ -11,5 +11,4 @@ export interface LoginUserInput {
 
 export interface LogoutUserInput {
   token: string;
-  id: string;
 }

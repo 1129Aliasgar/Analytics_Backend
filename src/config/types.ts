@@ -3,7 +3,7 @@
  */
 
 export const TYPES = {
-  // Controller Types 
+  // Controller Types
   AuthController: Symbol.for("AuthController"),
   AnalyticsController: Symbol.for("AnalyticsController"),
 

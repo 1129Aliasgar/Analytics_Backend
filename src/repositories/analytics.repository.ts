@@ -33,17 +33,16 @@ export class AnalyticsRepository {
       name: "Alice",
       city: "Hydrabad",
       age: 22,
-    }
+    },
   ];
 
   async getUsers(): Promise<User[]> {
-    return this.users
+    return this.users;
   }
 
   async getUserById(id: number): Promise<User | undefined> {
-    return this.users.find(user => user.id === id);
+    return this.users.find((user) => user.id === id);
   }
-  
 }
 
 export default AnalyticsRepository;

@@ -2,6 +2,6 @@
  * @author aliasgarbootwala@gmail.com
  */
 
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 dotenv.config();
