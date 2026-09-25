@@ -45,13 +45,22 @@ export class AuthService {
       password: hashedPassword,
     });
 
+    const checknewUser = await this.authRepository.findUserById(user.id);
+
+    if (!checknewUser) {
+      throw new ApiError(
+        "Something went wrong while registering",
+        STATUS_CODE.INTERNAL_SERVER_ERROR,
+      );
+    }
+
     this.logger.info("User registered", { userId: user.id });
 
     const token = generateToken({
       userId: user.id,
     });
 
-    return { user, token };
+    return { user: checknewUser, token };
   }
 
   async login(userData: LoginUserInput) {
@@ -59,7 +68,7 @@ export class AuthService {
     const user = await this.authRepository.findByEmail(userData.email);
 
     if (!user) {
-       this.logger.error("User not found", { userId: userData.email });
+      this.logger.error("User not found", { userId: userData.email });
       throw new ApiError("User not found", STATUS_CODE.NOT_FOUND);
     }
 
@@ -80,22 +89,22 @@ export class AuthService {
     return { user, token };
   }
 
-  async profile(userData: ProfileUserInput) {
-    this.logger.info("requesting profile", { userId: userData.userId });
+  async profile(UserData: ProfileUserInput) {
+    this.logger.info("requesting profile", { userId: UserData.userId });
 
     const isValid = await this.authRepository.isTokenBlacklisted(
-      userData.token,
+      UserData.token,
     );
 
-    if (!isValid) {
-      this.logger.error("token is not valid", { userId: userData.userId });
+    if (isValid) {
+      this.logger.error("token is not valid", { userId: UserData.userId });
       throw new ApiError("token is not valid", STATUS_CODE.UNAUTHORIZED);
     }
 
-    const user = await this.authRepository.findUserById(userData.userId);
+    const user = await this.authRepository.findUserById(UserData.userId);
 
     if (!user) {
-      this.logger.error("User not found", { userId: userData.userId });
+      this.logger.error("User not found", { userId: UserData.userId });
       throw new ApiError("User not found", STATUS_CODE.NOT_FOUND);
     }
 
@@ -103,7 +112,14 @@ export class AuthService {
   }
 
   async logout(token: LogoutUserInput) {
-    this.logger.info("logout try for", { token: token.token });
+    this.logger.info("logout try for");
+
+    const isBlacklisted = await this.authRepository.isTokenBlacklisted(token.token);
+
+    if (isBlacklisted) {
+      this.logger.error("token is already blacklisted");
+      throw new ApiError("token is already blacklisted", STATUS_CODE.UNAUTHORIZED);
+    }
 
     const result = await this.authRepository.createToken(token.token);
 

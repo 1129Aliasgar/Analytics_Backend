@@ -105,7 +105,7 @@ export class AuthController extends BaseController {
     try {
       const { token } = req.cookies;
 
-      await this.authService.logout(token);
+      await this.authService.logout({token});
 
       res.clearCookie("token", {
         httpOnly: true,
