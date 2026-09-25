@@ -5,6 +5,8 @@
 import mongoose from "mongoose";
 import { injectable } from "inversify";
 import { IDatabase } from "../types/database.types.js";
+import ApiError from "../utils/apiError.js";
+import { STATUS_CODE } from "../constants/statusCode.js";
 
 mongoose.set("strictQuery", true);
 mongoose.set("autoIndex", false);
@@ -16,7 +18,7 @@ class MongoDatabase implements IDatabase {
   constructor(mongoUri: string) {
     if (!process.env.MONGO_URI) {
       console.log(process.env.MONGO_URI);
-      throw new Error("MONGO_URI is not defined");
+      throw new ApiError("MONGO_URI is not defined" , STATUS_CODE.INTERNAL_SERVER_ERROR);
     }
     this.mongoUri = process.env.MONGO_URI!;
   }
@@ -26,7 +28,7 @@ class MongoDatabase implements IDatabase {
       console.log("MongoDB connected");
     } catch (error) {
       console.error("MongoDB connection error:", error);
-      throw error;
+      throw new ApiError("MongoDB connection error", STATUS_CODE.INTERNAL_SERVER_ERROR, [], "", null, false);
     }
   }
 
